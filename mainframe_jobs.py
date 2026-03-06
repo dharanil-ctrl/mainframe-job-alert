@@ -4,27 +4,25 @@ import requests
 from email.mime.text import MIMEText
 from bs4 import BeautifulSoup
 
-# Email configuration
 EMAIL_FROM = os.environ["EMAIL_FROM"]
 EMAIL_PASS = os.environ["EMAIL_PASS"]
 EMAIL_TO = "shabnac11@gmail.com"
 
-# Indeed RSS feed (jobs posted within last 3 days)
 RSS_URL = "https://www.indeed.com/rss?q=mainframe&fromage=3"
+
 
 def get_jobs():
     jobs = []
 
     response = requests.get(RSS_URL, timeout=30)
-    soup = BeautifulSoup(response.content, "xml")
+
+    soup = BeautifulSoup(response.content, "html.parser")
 
     for item in soup.find_all("item"):
-        title = item.title.text.strip()
-        link = item.link.text.strip()
-        pub_date = item.pubDate.text.strip()
+        title = item.find("title").text.strip()
+        link = item.find("link").text.strip()
 
-        job_text = f"{title}\n{pub_date}\n{link}\n"
-        jobs.append(job_text)
+        jobs.append(f"{title}\n{link}\n")
 
     return jobs
 
@@ -32,13 +30,14 @@ def get_jobs():
 def send_email(job_list):
 
     if not job_list:
-        body = "No mainframe jobs found on Indeed in the last 3 days."
+        body = "No mainframe jobs found in last 3 days."
     else:
-        body = "Mainframe Jobs Posted in Last 3 Days\n\n"
+        body = "Mainframe Jobs (Last 3 Days)\n\n"
         body += "\n".join(job_list)
 
     msg = MIMEText(body)
-    msg["Subject"] = "Daily Mainframe Job Alerts"
+
+    msg["Subject"] = "Daily Mainframe Jobs"
     msg["From"] = EMAIL_FROM
     msg["To"] = EMAIL_TO
 
