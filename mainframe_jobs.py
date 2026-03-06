@@ -2,7 +2,7 @@ import os
 import smtplib
 import requests
 from email.mime.text import MIMEText
-import xml.etree.ElementTree as ET
+from bs4 import BeautifulSoup
 
 EMAIL_FROM = os.environ["EMAIL_FROM"]
 EMAIL_PASS = os.environ["EMAIL_PASS"]
@@ -11,13 +11,14 @@ EMAIL_TO = "shabnac11@gmail.com"
 rss_url = "https://www.indeed.com/rss?q=mainframe&fromage=3"
 
 response = requests.get(rss_url)
-root = ET.fromstring(response.content)
+
+soup = BeautifulSoup(response.content, "xml")
 
 jobs = []
 
-for item in root.findall(".//item"):
-    title = item.find("title").text
-    link = item.find("link").text
+for item in soup.find_all("item"):
+    title = item.title.text
+    link = item.link.text
     jobs.append(f"{title}\n{link}\n")
 
 if not jobs:
