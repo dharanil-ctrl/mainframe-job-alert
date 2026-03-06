@@ -7,8 +7,8 @@ EMAIL_FROM = os.environ["EMAIL_FROM"]
 EMAIL_PASS = os.environ["EMAIL_PASS"]
 EMAIL_TO = "shabnac11@gmail.com"
 
-indeed_feed = "https://www.indeed.com/rss?q=mainframe&fromage=3"
-dice_feed = "https://job-openings.monster.com/search?q=mainframe&cy=us&tm=3&rss=1"
+indeed_feed = "https://www.indeed.com/jobs?q=mainframe&l=&fromage=3&from=searchOnDesktopSerp&vjk=0d654ca2d8825537"
+
 
 def fetch_feed(url):
     try:
