@@ -55,3 +55,20 @@ def send_email():
 search_indeed()
 search_dice()
 send_email()
+
+def send_email():
+    if not jobs:
+        body = "No mainframe jobs found in the last 3 days on Indeed or Dice."
+    else:
+        body = "Mainframe jobs posted in last 3 days\n\n"
+        body += "\n".join(jobs)
+
+    msg = MIMEText(body)
+    msg["Subject"] = "Daily Mainframe Jobs"
+    msg["From"] = EMAIL_FROM
+    msg["To"] = EMAIL_TO
+
+    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+    server.login(EMAIL_FROM, EMAIL_PASS)
+    server.sendmail(EMAIL_FROM, EMAIL_TO, msg.as_string())
+    server.quit()
